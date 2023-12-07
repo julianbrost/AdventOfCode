@@ -1,3 +1,5 @@
+#!/usr/bin/env elixir
+
 "seeds: " <> seedline = IO.read(:line)
 seeds = seedline |> String.split() |> Stream.map(&String.to_integer/1)
 seeds1 = seeds |> Enum.map(&(&1..&1))
@@ -44,5 +46,5 @@ solve = fn seeds, maps ->
 
 end
 
-IO.puts("Part 1: #{inspect(solve.(seeds1, maps))}")
-IO.puts("Part 2: #{inspect(solve.(seeds2, maps))}")
+IO.puts("Part 1: #{solve.(seeds1, maps)}")
+IO.puts("Part 2: #{solve.(seeds2, maps)}")
