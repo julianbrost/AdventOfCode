@@ -1,6 +1,6 @@
 parse c = map (map read . words) $ lines c
 
-deltas xs = [b-a | (a, b) <- zip xs $ tail xs]
+deltas xs = zipWith (-) (tail xs) xs
 
 findNext xs
     | all (==0) xs = 0
