@@ -1,4 +1,4 @@
-parse c = map (map read . words) $ lines c
+parse = map (map read . words) . lines
 
 deltas xs = zipWith (-) (tail xs) xs
 
