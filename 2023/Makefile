@@ -1,4 +1,4 @@
-ALL = 3 4
+ALL = 3 4 9
 
 .PHONY: all
 all: $(ALL)
@@ -12,3 +12,6 @@ clean:
 
 4: 4.rs
 	rustc -o $@ $<
+
+9: 9.hs
+	ghc -o $@ $<
