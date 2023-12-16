@@ -1,4 +1,4 @@
-ALL = 3 4 9 11
+ALL = 3 4 9 11 15
 
 .PHONY: all
 all: $(ALL)
@@ -18,3 +18,6 @@ clean:
 
 11: 11.f90
 	gfortran -o $@ $<
+
+15: 15.cob
+	cobc -O2 -x -o $@ $<
