@@ -1,0 +1,16 @@
+#!/bin/sh
+
+cat - "$(dirname "$0")/18.ps" <<EOF
+%!PS
+
+% Hint: you can evaluate this file with Ghostscript like this
+%
+%   ./18 < 18.in | gs -q -sDEVICE=nullpage -dNOPAUSE -
+%
+% It might also work with some printers, however, mine didn't like it. :(
+
+(\
+$(cat)
+)
+
+EOF

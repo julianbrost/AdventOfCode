@@ -1,0 +1,119 @@
+% Note: this does not work on its own, see the corresponding shell script for
+% how to insert the input.
+
+/maxn 1024 def
+
+/xs maxn array def
+/ys maxn array def
+
+/lxs maxn array def
+/lys maxn array def
+
+/n 0 def
+
+/curx 0 def
+/cury 0 def
+/totalsteps 0 def
+
+/lcurx 0 def
+/lcury 0 def
+/ltotalsteps 0 def
+
+{
+	( ) search {
+		/direction exch def
+		pop
+	} { exit } ifelse
+
+	( ) search {
+		cvi
+		/steps exch def
+		pop
+	} { exit } ifelse
+
+	(\n) search {
+		/color exch def
+		pop
+
+		/ldirection color 7 1 getinterval def
+		/lsteps (16#_____) dup 3 color 2 5 getinterval putinterval cvi def
+
+		direction (R) eq { /curx curx steps add def } if
+		direction (L) eq { /curx curx steps sub def } if
+		direction (U) eq { /cury cury steps add def } if
+		direction (D) eq { /cury cury steps sub def } if
+
+		xs n curx put
+		ys n cury put
+		/totalsteps totalsteps steps add def
+
+		ldirection (0) eq { /lcurx lcurx lsteps add def } if
+		ldirection (2) eq { /lcurx lcurx lsteps sub def } if
+		ldirection (3) eq { /lcury lcury lsteps add def } if
+		ldirection (1) eq { /lcury lcury lsteps sub def } if
+
+		lxs n lcurx put
+		lys n lcury put
+		/ltotalsteps ltotalsteps lsteps add def
+
+		/n n 1 add def
+	} { exit } ifelse
+} loop
+
+/area 0 def
+0 1 n 1 sub {
+	/i exch def
+	xs i get
+	ys i 1 add n mod get
+	mul
+	xs i 1 add n mod get
+	ys i get
+	mul
+	sub
+	area add
+	/area exch def
+} for
+area abs 2 idiv
+totalsteps 2 idiv
+add 1 add
+
+(Part 1:                     \n) dup 8 20 getinterval
+3 2 roll
+exch
+cvs pop
+dup
+print
+
+/Courier 20 selectfont
+72 600 moveto
+show
+
+/area 0 def
+0 1 n 1 sub {
+	/i exch def
+	lxs i get
+	lys i 1 add n mod get
+	mul
+	lxs i 1 add n mod get
+	lys i get
+	mul
+	sub
+	area add
+	/area exch def
+} for
+area abs 2 idiv
+ltotalsteps 2 idiv
+add 1 add
+
+(Part 2:                     \n) dup 8 20 getinterval
+3 2 roll
+exch
+cvs pop
+dup
+print
+
+/Courier 20 selectfont
+72 500 moveto
+show
+
+showpage
