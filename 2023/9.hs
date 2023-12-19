@@ -1,3 +1,5 @@
+#!/usr/bin/env runhaskell
+
 parse = map (map read . words) . lines
 
 deltas xs = zipWith (-) (tail xs) xs
