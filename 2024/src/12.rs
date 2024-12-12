@@ -15,54 +15,38 @@ fn main() {
     for i in 0..n {
         for j in 0..m {
             if !visited[i][j] {
+                let mut queue = VecDeque::new();
+                queue.push_back((i, j));
+                visited[i][j] = true;
+
                 let mut area = 0u64;
                 let mut perimeter = 0u64;
                 let mut edges = 0u64;
 
-                visited[i][j] = true;
-                let mut queue = VecDeque::new();
-                queue.push_back((i, j));
                 while let Some((i, j)) = queue.pop_front() {
                     let c = input[i][j];
                     area += 1;
 
                     for (di, dj) in [(1, 0), (-1, 0), (0, 1), (0, -1)] {
-                        if let (Some(ni), Some(nj)) = (bounded_add(i, di, n), bounded_add(j, dj, m))
-                        {
-                            if input[ni][nj] != c {
-                                perimeter += 1;
-                            } else if !visited[ni][nj] {
-                                visited[ni][nj] = true;
-                                queue.push_back((ni, nj));
-                            }
-                        } else {
+                        let ni = i.checked_add_signed(di);
+                        let nj = j.checked_add_signed(dj);
+                        if get(&input, ni, nj) != Some(c) {
                             perimeter += 1;
+                        } else {
+                            if !visited[ni.unwrap()][nj.unwrap()] {
+                                visited[ni.unwrap()][nj.unwrap()] = true;
+                                queue.push_back((ni.unwrap(), nj.unwrap()));
+                            }
                         }
                     }
 
-                    const DS: [(isize, isize); 8] = [
-                        (0, 1),
-                        (1, 1),
-                        (1, 0),
-                        (1, -1),
-                        (0, -1),
-                        (-1, -1),
-                        (-1, 0),
-                        (-1, 1),
-                    ];
-
-                    for d in (0..DS.len()).step_by(2) {
-                        let mut same = [false, false, false];
-                        for k in 0..3 {
-                            let (di, dj) = DS[(d + k) % DS.len()];
-                            if let (Some(ni), Some(nj)) =
-                                (bounded_add(i, di, n), bounded_add(j, dj, m))
-                            {
-                                same[k] = input[ni][nj] == c;
-                            }
-                        }
-
-                        edges += match same {
+                    for (di, dj) in [(1, 1), (1, -1), (-1, 1), (-1, -1)] {
+                        edges += match [
+                            get(&input, Some(i), j.checked_add_signed(dj)) == Some(c),
+                            get(&input, i.checked_add_signed(di), j.checked_add_signed(dj))
+                                == Some(c),
+                            get(&input, i.checked_add_signed(di), Some(j)) == Some(c),
+                        ] {
                             [false, _, false] => 1,
                             [true, false, true] => 1,
                             [_, _, _] => 0,
@@ -80,11 +64,14 @@ fn main() {
     println!("Part 2: {}", res2);
 }
 
-fn bounded_add(a: usize, b: isize, l: usize) -> Option<usize> {
-    if let Some(x) = a.checked_add_signed(b) {
-        if x < l {
-            return Some(x);
+fn get(input: &Vec<Vec<char>>, i: Option<usize>, j: Option<usize>) -> Option<char> {
+    if let (Some(i), Some(j)) = (i, j) {
+        if i < input.len() && j < input[i].len() {
+            Some(input[i][j])
+        } else {
+            None
         }
+    } else {
+        None
     }
-    None
 }
