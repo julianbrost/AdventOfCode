@@ -17,7 +17,6 @@ int main() {
 	while (cin >> s) {
 		if (s.back() == ':') {
 			s.pop_back();
-			indeg[s]; // this is cursed: ensure s exists as key
 			cur = move(s);
 		} else {
 			indeg[s]++;
@@ -26,26 +25,23 @@ int main() {
 	}
 
 	queue<string> q;
-	for (const auto& [n, i] : indeg) {
-		if (i == 0) {
-			q.push(n);
+	for (const auto& [c, n] : adj) {
+		if (indeg[c] == 0) {
+			q.push(c);
 		}
 	}
 
-	vector<string> ts;
+	unordered_map<string,ull> p1{{"you", 1}}, p2{{"svr", 1}};
 	while (!q.empty()) {
 		string c = move(q.front());
 		q.pop();
+
 		for (const string& n : adj[c]) {
 			if (--indeg[n] == 0) {
 				q.push(n);
 			}
 		}
-		ts.emplace_back(move(c));
-	}
 
-	unordered_map<string,ull> p1{{"you", 1}}, p2{{"svr", 1}};
-	for (auto &c : ts) {
 		if (c == "dac" || c == "fft") {
 			p2 = {{c, p2[c]}};
 		}
@@ -54,6 +50,7 @@ int main() {
 			p2[n] += p2[c];
 		}
 	}
+
 	cout << "Part 1: " << p1["out"] << endl;
 	cout << "Part 2: " << p2["out"] << endl;
 }
